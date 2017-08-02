@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * MaterialGroup
@@ -42,6 +43,13 @@ class MaterialGroup
      */
     private $leftSide;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Material", mappedBy="group")
+     */
+    private $materials;
+    public function __construct() {
+        $this->materials = new ArrayCollection();
+    }
 
     /**
      * Get id

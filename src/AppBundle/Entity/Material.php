@@ -35,11 +35,54 @@ class Material
      */
     private $name;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="Unit")
+     * @ORM\JoinColumn(name="unit_id", referencedColumnName="id")
+     */
+    private $unit;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="MaterialGroup", inversedBy="materials")
+     * @ORM\JoinColumn(name="group_id", referencedColumnName="id", nullable=false)
+     */
+    private $group;
+
+    /**
+     * @return mixed
+     */
+    public function getUnit()
+    {
+        return $this->unit;
+    }
+
+    /**
+     * @param mixed $unit
+     */
+    public function setUnit($unit)
+    {
+        $this->unit = $unit;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getGroup()
+    {
+        return $this->group;
+    }
+
+    /**
+     * @param mixed $group
+     */
+    public function setGroup($group)
+    {
+        $this->group = $group;
+    }
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {

@@ -12,4 +12,11 @@ use Doctrine\ORM\EntityRepository;
  */
 class MaterialGroupRepository extends EntityRepository
 {
+    public function getLeaves ()
+    {
+        $query = $this->_em->createQuery('SELECT mg FROM AppBundle:MaterialGroup mg WHERE mg.rightSide = mg.leftSide + 1');
+
+        return $query->getResult();
+
+    }
 }

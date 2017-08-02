@@ -1,0 +1,13 @@
+{% extends "base.html.twig" %}
+{% block body %}
+    {% if message is defined %}
+        {{ message }}
+    {% else %}
+        Dane materiału do zmiany: <br>
+        Nazwa: {{ material.name }} <br>
+        Kod: {{ material.code }} <br>
+        Jednostka miary: {{ material.unit.name }} <br>
+        Grupa materiałów: {{ material.group.name }} <br>
+    {% endif %}
+
+{% endblock %}

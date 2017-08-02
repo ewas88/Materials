@@ -1,7 +1,30 @@
 {% extends "base.html.twig" %}
 {% block body %}
+    {% if message is defined %}
+        {{ message }} <br>
+    {% endif %}
     {% for material in materials %}
         {{ material.name }}
         <a href="{{ path('update_material', {'id': material.id }) }} "><span>Edycja materiału</span></a> <br>
     {% endfor %}
+
+    <form action="#" method="POST">
+        Utwórz nowy materiał:<br>
+        Nazwa: <input type="text" name="name"><br>
+        Kod: <input type="text" name="code"><br>
+        Jednostka miary:
+        <select name="unit">
+            <option value="null">brak jednostki miary</option>
+            {% for unit in units %}
+                <option value={{ unit.id }}>{{ unit.name }}</option>
+            {% endfor %}
+        </select> <br>
+        Grupa materiałów:
+        <select name="group">
+            {% for group in groups %}
+                <option value={{ group.id }}>{{ group.name }}</option>
+            {% endfor %}
+        </select> <br>
+        <input type="submit" name="add" value="Dodaj materiał do bazy">
+    </form>
 {% endblock %}

@@ -3,7 +3,7 @@
     {% if message is defined %}
         {{ message }} <br>
     {% endif %}
-    {% for material in materials %}
+    {% for unit in units %}
         {{ material.name }}
         <a href="/materials/update/{{ material.id }}">Edycja materiału</a> <br>
     {% endfor %}

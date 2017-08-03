@@ -2,12 +2,28 @@
 <html>
     <head>
         <meta charset="UTF-8" />
-        <title>{% block title %}Welcome!{% endblock %}</title>
+        <title>{% block title %}Materials{% endblock %}</title>
+        <link rel="stylesheet" href="{{ asset('css/style.css') }}"/>
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata">
         {% block stylesheets %}{% endblock %}
-        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+        {% block javascripts %}{% endblock %}
     </head>
     <body>
+    <div class="w3-row">
+        <div class="w3-col m4 w3-center">
+            <a href="/materials">MATERIAŁY</a>
+        </div>
+        <div class="w3-col m4 w3-center">
+            <a href="/groups">GRUPY MATERIAŁÓW</a>
+        </div>
+        <div class="w3-col m4 w3-center">
+            <a href="/units">JEDNOSTKI MIARY</a>
+        </div>
+    </div>
+
+    <div>
         {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
+    </div>
     </body>
 </html>

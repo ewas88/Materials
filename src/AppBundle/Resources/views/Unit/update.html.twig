@@ -1,0 +1,28 @@
+{% extends "base.html.twig" %}
+{% block body %}
+    {% if message is defined %}
+        {{ message }}
+    {% else %}
+        <form action="#" method="POST">
+            <table>
+                Dane jednostki miary do zmiany:
+                <tr>
+                    <th></th>
+                    <th>Aktualne dane</th>
+                    <th>Zmień dane</th>
+                </tr>
+                <tr>
+                    <th>Nazwa</th>
+                    <th>{{ unit.name }}</th>
+                    <th><input type="text" name="name"></th>
+                </tr>
+                <tr>
+                    <th>Skrót</th>
+                    <th>{{ unit.abbreviation }}</th>
+                    <th><input type="text" name="abbreviation"></th>
+                </tr>
+            </table>
+            <input type="submit" name="change" value="Aktualizuj">
+        </form>
+    {% endif %}
+{% endblock %}

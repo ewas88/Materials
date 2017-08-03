@@ -8,7 +8,6 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
-use AppBundle\Entity\MaterialGroup;
 
 class MaterialController extends Controller
 {
@@ -34,15 +33,22 @@ class MaterialController extends Controller
     /**
      * @Route("/materials/update/{id}", name="update_material")
      * @Template("AppBundle:Material:update.html.twig")
+     * @Method("GET")
      */
-    public function updateMaterialAction(Request $request, $id)
+    public function materialDetailsAction($id)
     {
         if (is_numeric($id)) {
             $materialRepository = $this->getDoctrine()->getRepository('AppBundle:Material');
             $material = $materialRepository->find($id);
 
+            $unitRepository = $this->getDoctrine()->getRepository('AppBundle:Unit');
+            $units = $unitRepository->findBy(array(), array('name' => 'ASC'));
+
+            $groupRepository = $this->getDoctrine()->getRepository('AppBundle:MaterialGroup');
+            $groups = $groupRepository->getLeaves();
+
             if ($material) {
-                return ['material' => $material];
+                return ['material' => $material, 'units' => $units, 'groups' => $groups];
             } else {
                 return ['message' => "Niepoprawny numer ID materiału."];
             }
@@ -50,6 +56,56 @@ class MaterialController extends Controller
             return ['message' => "Niepoprawny numer ID materiałuuu."];
         }
 
+    }
+
+    /**
+     * @Route("/materials/update/{id}")
+     * @Template("AppBundle:Material:update.html.twig")
+     * @Method("POST")
+     */
+    public function updateMaterialAction(Request $request, $id)
+    {
+        if (is_numeric($id)) {
+            $em = $this->getDoctrine()->getManager();
+
+            $materialRepository = $this->getDoctrine()->getRepository('AppBundle:Material');
+            $material = $materialRepository->find($id);
+
+            if ($material) {
+                $name = $request->request->get('name');
+                $code = $request->request->get('code');
+                $unit = $request->request->get('unit');
+                $group = $request->request->get('group');
+
+                if ($name != "") {
+                    $material->setName($name);
+                }
+
+                if ($code != "") {
+                    $material->setCode($code);
+                }
+
+                if ($unit != "same") {
+                    $unitRepository = $this->getDoctrine()->getRepository('AppBundle:Unit');
+                    $material->setUnit($unitRepository->find($unit));
+                }
+
+                if ($group != "same") {
+                    $groupRepository = $this->getDoctrine()->getRepository('AppBundle:MaterialGroup');
+                    $material->setGroup($groupRepository->find($group));
+                }
+
+                $em->persist($material);
+                $em->flush();
+
+                return ['message' => "Dane materiału zostały zmienione."];
+
+            } else {
+                return ['message' => "Niepoprawny numer ID materiału."];
+            }
+        } else {
+            return ['message' => "Niepoprawny numer ID materiałuuu."];
+        }
     }
 
     /**

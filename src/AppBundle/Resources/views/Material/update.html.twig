@@ -3,11 +3,56 @@
     {% if message is defined %}
         {{ message }}
     {% else %}
-        Dane materiału do zmiany: <br>
-        Nazwa: {{ material.name }} <br>
-        Kod: {{ material.code }} <br>
-        Jednostka miary: {{ material.unit.name }} <br>
-        Grupa materiałów: {{ material.group.name }} <br>
+        <form action="#" method="POST">
+            <table>
+                Dane materiału do zmiany:
+                <tr>
+                    <th></th>
+                    <th>Aktualne dane</th>
+                    <th>Zmień dane</th>
+                </tr>
+                <tr>
+                    <th>Nazwa</th>
+                    <th>{{ material.name }}</th>
+                    <th><input type="text" name="name"></th>
+                </tr>
+                <tr>
+                    <th>Kod</th>
+                    <th>{{ material.code }}</th>
+                    <th><input type="text" name="code"></th>
+                </tr>
+                <tr>
+                    <th>Jednostka miary</th>
+                    <th> {% if material.unit.name is defined %}
+                            {{ material.unit.name }}
+                        {% else %}
+                            Brak jednostki miary
+                        {% endif %}
+                    </th>
+                    <th>
+                        <select name="unit">
+                            <option value="same"></option>
+                            <option value="null">brak jednostki miary</option>
+                            {% for unit in units %}
+                                <option value={{ unit.id }}>{{ unit.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </th>
+                </tr>
+                <tr>
+                    <th>Grupa materiałów</th>
+                    <th>{{ material.group.name }}</th>
+                    <th>
+                        <select name="group">
+                            <option value="same"></option>
+                            {% for group in groups %}
+                                <option value={{ group.id }}>{{ group.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </th>
+                </tr>
+            </table>
+            <input type="submit" name="change" value="Aktualizuj">
+        </form>
     {% endif %}
-
 {% endblock %}

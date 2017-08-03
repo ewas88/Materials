@@ -1,0 +1,17 @@
+{% extends "base.html.twig" %}
+{% block body %}
+    {% if message is defined %}
+        {{ message }} <br>
+    {% endif %}
+    {% for unit in units %}
+        {{ unit.name }}
+        <a href="/units/update/{{ unit.id }}">Edycja jednostki miary</a> <br>
+    {% endfor %}
+
+    <form action="#" method="POST">
+        Utwórz nową jednostkę miary:<br>
+        Nazwa: <input type="text" name="name" required><br>
+        Skrót: <input type="text" name="abbreviation" required><br>
+        <input type="submit" name="add" value="Dodaj jednostkę do bazy">
+    </form>
+{% endblock %}

@@ -19,4 +19,23 @@ class MaterialGroupRepository extends EntityRepository
         return $query->getResult();
 
     }
+
+    public function getTree ()
+    {
+
+        $sql = " 
+        SELECT CONCAT(REPEAT(' ',COUNT(parent.name)-1),
+child.name) AS name
+FROM AppBundle:MaterialGroup AS child,
+AppBundle:MaterialGroup AS parent
+WHERE child.leftSide BETWEEN parent.leftSide AND parent.rightSide
+GROUP BY child.name
+ORDER BY child.leftSide
+    ";
+
+        $em = $this->getDoctrine()->getManager();
+        $stmt = $em->getConnection()->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
 }

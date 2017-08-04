@@ -12,30 +12,23 @@ use Doctrine\ORM\EntityRepository;
  */
 class MaterialGroupRepository extends EntityRepository
 {
-    public function getLeaves ()
+    public function getLeaves()
     {
-        $query = $this->_em->createQuery('SELECT mg FROM AppBundle:MaterialGroup mg WHERE mg.rightSide = mg.leftSide + 1');
+        $query = $this->_em->createQuery(
+            'SELECT child 
+            FROM AppBundle:MaterialGroup AS parent,  AppBundle:MaterialGroup AS child 
+            WHERE parent.id <> child.parent');
 
         return $query->getResult();
 
     }
 
-    public function getTree ()
+    public function getRoot()
     {
+        $query = $this->_em->createQuery('SELECT m FROM AppBundle:MaterialGroup m WHERE m.parent IS NULL');
 
-        $sql = " 
-        SELECT CONCAT(REPEAT(' ',COUNT(parent.name)-1),
-child.name) AS name
-FROM AppBundle:MaterialGroup AS child,
-AppBundle:MaterialGroup AS parent
-WHERE child.leftSide BETWEEN parent.leftSide AND parent.rightSide
-GROUP BY child.name
-ORDER BY child.leftSide
-    ";
-
-        $em = $this->getDoctrine()->getManager();
-        $stmt = $em->getConnection()->prepare($sql);
-        $stmt->execute();
-        return $stmt->fetchAll();
+        return $query->getResult();
     }
+
+
 }

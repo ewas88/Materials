@@ -7,6 +7,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
+use AppBundle\Entity\MaterialGroup;
 
 class MaterialGroupController extends Controller
 {
@@ -17,27 +18,39 @@ class MaterialGroupController extends Controller
      */
     public function allGroupsAction()
     {
-//        $groupRepository = $this->getDoctrine()->getRepository('AppBundle:MaterialGroup');
-//        $groups = $groupRepository->findBy(array(), array('name' => 'ASC'));
-//        $groups = $groupRepository->getTree();
+        $groupRepository = $this->getDoctrine()->getRepository('AppBundle:MaterialGroup');
+        $allGroups = $groupRepository->findBy(array(), array('name' => 'ASC'));
+
+//$roots = $groupRepository->findAll(array('parent' => null));
 //
-//        return ['groups' => $groups];
+//print_r(MaterialGroup::getTree($roots));
 
-        $sql = " 
-        SELECT CONCAT(REPEAT(' ',COUNT(`parent`.`name`)-1),
-`child`.`name`) AS `name`
-FROM `material_group` AS `child`,
-`material_group` AS `parent`
-WHERE `child`.`left_side` BETWEEN `parent`.`left_side` AND `parent`.`right_side`
-GROUP BY `child`.`id`
-ORDER BY `child`.`left_side`
-    ";
 
+
+
+
+
+        return [ 'allGroups' => $allGroups];
+    }
+
+    /**
+     * @Route("/groups")
+     * @Template("AppBundle:Group:all.html.twig")
+     * @Method("POST")
+     */
+    public function newGroupAction(Request $request)
+    {
         $em = $this->getDoctrine()->getManager();
-        $stmt = $em->getConnection()->query($sql);
 
-        print_r($stmt->fetchAll());
+        $name = $request->request->get('name');
+        $abbreviation = $request->request->get('abbreviation');
 
-//        return $stmt->fetchAll();
+
+        $em->persist($unit);
+        $em->flush();
+
+
+
+        return ['units' => $units, 'message' => "Jednostka miary dodana do bazy."];
     }
 }

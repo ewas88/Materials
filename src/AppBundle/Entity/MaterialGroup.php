@@ -30,26 +30,56 @@ class MaterialGroup
     private $name;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="right_side", type="integer")
+     * @ORM\OneToMany(targetEntity="MaterialGroup", mappedBy="parent")
      */
-    private $rightSide;
+    private $children;
+    public function __construct() {
+        $this->children = new ArrayCollection();
+        $this->materials = new ArrayCollection();
+    }
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="left_side", type="integer")
+     * @return mixed
      */
-    private $leftSide;
+    public function getChildren()
+    {
+        return $this->children;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMaterials()
+    {
+        return $this->materials;
+    }
+
+    /**
+     * @ORM\ManyToOne(targetEntity="MaterialGroup", inversedBy="children")
+     * @ORM\JoinColumn(name="parent_id", referencedColumnName="id")
+     */
+    private $parent;
+
+    /**
+     * @return mixed
+     */
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    /**
+     * @param mixed $parent
+     */
+    public function setParent($parent)
+    {
+        $this->parent = $parent;
+    }
 
     /**
      * @ORM\OneToMany(targetEntity="Material", mappedBy="group")
      */
     private $materials;
-    public function __construct() {
-        $this->materials = new ArrayCollection();
-    }
 
     /**
      * Get id
@@ -83,50 +113,17 @@ class MaterialGroup
     {
         return $this->name;
     }
-
-    /**
-     * Set rightSide
-     *
-     * @param integer $rightSide
-     * @return MaterialGroup
-     */
-    public function setRightSide($rightSide)
+    
+    public static function getTree($roots)
     {
-        $this->rightSide = $rightSide;
-
-        return $this;
+        $array = [];
+        foreach ($roots as $root) {
+            foreach ($root->getChildren() as $child) {
+                $array[] = $child;
+            }
+        }
+        return $array;
     }
 
-    /**
-     * Get rightSide
-     *
-     * @return integer 
-     */
-    public function getRightSide()
-    {
-        return $this->rightSide;
-    }
 
-    /**
-     * Set leftSide
-     *
-     * @param integer $leftSide
-     * @return MaterialGroup
-     */
-    public function setLeftSide($leftSide)
-    {
-        $this->leftSide = $leftSide;
-
-        return $this;
-    }
-
-    /**
-     * Get leftSide
-     *
-     * @return integer 
-     */
-    public function getLeftSide()
-    {
-        return $this->leftSide;
-    }
 }

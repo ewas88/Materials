@@ -22,7 +22,7 @@
         Grupa materiałów:
         <select name="group">
             {% for group in groups %}
-                <option value={{ group.id }}>{{ group.name }}</option>
+                <option value={{ group.id }}>{{ group.name }} (Grupa nadrzędna: {{ group.parent.name }})</option>
             {% endfor %}
         </select> <br>
         <input type="submit" name="add" value="Dodaj materiał do bazy">

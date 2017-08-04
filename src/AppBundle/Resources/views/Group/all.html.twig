@@ -3,28 +3,35 @@
     {% if message is defined %}
         {{ message }} <br>
     {% endif %}
-    {#{% for unit in units %}#}
-        {#{{ material.name }}#}
-        {#<a href="/materials/update/{{ material.id }}">Edycja materiału</a> <br>#}
-    {#{% endfor %}#}
 
-    {#<form action="#" method="POST">#}
-        {#Utwórz nowy materiał:<br>#}
-        {#Nazwa: <input type="text" name="name" required><br>#}
-        {#Kod: <input type="text" name="code" required><br>#}
-        {#Jednostka miary:#}
-        {#<select name="unit">#}
-            {#<option value="null">brak jednostki miary</option>#}
-            {#{% for unit in units %}#}
-                {#<option value={{ unit.id }}>{{ unit.name }}</option>#}
-            {#{% endfor %}#}
-        {#</select> <br>#}
-        {#Grupa materiałów:#}
-        {#<select name="group">#}
-            {#{% for group in groups %}#}
-                {#<option value={{ group.id }}>{{ group.name }}</option>#}
-            {#{% endfor %}#}
-        {#</select> <br>#}
-        {#<input type="submit" name="add" value="Dodaj materiał do bazy">#}
-    {#</form>#}
+    {#{{ _self.recursiveList(groups) }}#}
+
+    <form action="#" method="POST">
+        Utwórz nową grupę materiałów:<br>
+        Nazwa: <input type="text" name="name" required><br>
+        Grupa wyjściowa:
+        <select name="group">
+            <option value="null">Nowa grupa główna</option>
+            {% for group in allGroups %}
+                <option value={{ group.id }}>{{ group.name }}</option>
+            {% endfor %}
+        </select>
+        <input type="submit" name="add" value="Dodaj grupę do bazy">
+    </form>
+
 {% endblock %}
+
+
+    {#{% macro recursiveList(groups) %}#}
+        {#{% for group in groups %}#}
+
+            {#{% if group is iterable %}#}
+                {#Grupa: {{ group.name }} <br>#}
+                {#{% for sub_group in group %}#}
+                    {#{{ _self.recursiveList(sub_group) }}#}
+                {#{% endfor %}#}
+            {#{% else %}#}
+                {#Grupa: {{ group.name }} <br>#}
+            {#{% endif %}#}
+        {#{% endfor %}#}
+    {#{% endmacro %}#}

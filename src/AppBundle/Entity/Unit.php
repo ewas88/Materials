@@ -39,7 +39,7 @@ class Unit
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -62,7 +62,7 @@ class Unit
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -85,7 +85,7 @@ class Unit
     /**
      * Get abbreviation
      *
-     * @return string 
+     * @return string
      */
     public function getAbbreviation()
     {

@@ -1,37 +1,56 @@
 {% extends "base.html.twig" %}
 {% block body %}
     {% if message is defined %}
-        {{ message }} <br>
+        <h1 align="center">{{ message }} </h1>>
     {% endif %}
+    <div class="floating w3-border-right">
+        <div class="w3-container w3-indigo">
+            <h2>Lista wszystkich grup materiałów</h2>
+        </div>
 
-    {#{{ _self.recursiveList(groups) }}#}
+        <div class="w3-panel">
+            <ol class="w3-blue">
+                {% macro recursiveList(groups) %}
+                    {% for group in groups %}
+                        <li class="w3-light-gray">
+                            {{ group.name }} <a style="float: right" href="/groups/update/{{ group.id }}">Edycja</a>
+                            {% if group.children is defined %}
+                                <ul>
+                                    {{ _self.recursiveList(group.children) }}
+                                </ul>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                {% endmacro %}
+            </ol>
+            {{ _self.recursiveList(groups) }}
+        </div>
+    </div>
+    <div class="floating w3-border-left">
+        <div class="w3-container w3-blue">
+            <h2>Utwórz nową grupę materiałów</h2>
+        </div>
 
-    <form action="#" method="POST">
-        Utwórz nową grupę materiałów:<br>
-        Nazwa: <input type="text" name="name" required><br>
-        Grupa wyjściowa:
-        <select name="group">
-            <option value="null">Nowa grupa główna</option>
-            {% for group in allGroups %}
-                <option value={{ group.id }}>{{ group.name }}</option>
+        <form class="w3-container" action="#" method="POST">
+            <p>
+                <label>Nazwa:</label>
+                <input type="text" name="name" required></p>
+            <p>
+                <label>Grupa nadrzędna:</label><br>
+                <input type="radio" value="null" name="group" checked> Nowa grupa główna <br>
+                {% macro newList(groups) %}
+                {% for group in groups %}
+                <input type="radio" class="w3-radio" value="{{ group.id }}" name="group"> {{ group.name }}
+            <ul>
+                {% if group.children is defined %}
+                    {{ _self.newList(group.children) }}
+                {% endif %}
+            </ul>
             {% endfor %}
-        </select>
-        <input type="submit" name="add" value="Dodaj grupę do bazy">
-    </form>
-
+            {% endmacro %}
+            {{ _self.newList(groups) }}
+            </p>
+            <input class="w3-button w3-black" type="submit" name="add" value="Dodaj grupę do bazy">
+        </form>
+    </div>
 {% endblock %}
-
-
-    {#{% macro recursiveList(groups) %}#}
-        {#{% for group in groups %}#}
-
-            {#{% if group is iterable %}#}
-                {#Grupa: {{ group.name }} <br>#}
-                {#{% for sub_group in group %}#}
-                    {#{{ _self.recursiveList(sub_group) }}#}
-                {#{% endfor %}#}
-            {#{% else %}#}
-                {#Grupa: {{ group.name }} <br>#}
-            {#{% endif %}#}
-        {#{% endfor %}#}
-    {#{% endmacro %}#}

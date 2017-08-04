@@ -4,7 +4,7 @@
         <h1 align="center">{{ message }}</h1>
     {% else %}
         <div class="w3-container w3-indigo">
-            <h2>Dane materiału do zmiany - <b>{{ material.name }}</b></h2>
+            <h2>Dane grupy do zmiany - <b>{{ group.name }}</b></h2>
         </div>
         <form action="#" method="POST">
             <table class="w3-table w3-striped">
@@ -15,51 +15,40 @@
                 </tr>
                 <tr>
                     <th>Nazwa</th>
-                    <th>{{ material.name }}</th>
+                    <th>{{ group.name }}</th>
                     <th><input type="text" name="name"></th>
                 </tr>
                 <tr>
-                    <th>Kod</th>
-                    <th>{{ material.code }}</th>
-                    <th><input type="text" name="code"></th>
-                </tr>
-                <tr>
-                    <th>Jednostka miary</th>
-                    <th> {% if material.unit.name is defined %}
-                            {{ material.unit.name }}
+                    <th>Grupa nadrzędna</th>
+                    <th> {% if group.parent.name is defined %}
+                            {{ group.parent.name }}
                         {% else %}
-                            Brak jednostki miary
+                            -
                         {% endif %}
                     </th>
                     <th>
-                        <select name="unit">
-                            <option value="same"></option>
-                            <option value="null">brak jednostki miary</option>
-                            {% for unit in units %}
-                                <option value={{ unit.id }}>{{ unit.name }}</option>
-                            {% endfor %}
-                        </select>
-                    </th>
-                </tr>
-                <tr>
-                    <th>Grupa materiałów</th>
-                    <th>{{ material.group.name }}</th>
-                    <th>
                         <select name="group">
+                            <option value="same"></option>
+                            <option value="null">Nowa grupa główna</option>
                             {{ _self.newList(groups) }}
                             {% macro newList(groups) %}
                                 {% for group in groups %}
-                                    {% if group.children|length >= 1 %}
-                                        <optgroup label="{{ group.name }}">
-                                            {{ _self.newList(group.children) }}
+                                    {% if group.parent == null %}
+                                        <optgroup label="--------------------------------">
                                         </optgroup>
+                                    {% else %}
+                                        <optgroup label="-----">
+                                        </optgroup>
+                                    {% endif %}
+                                    {% if group.children|length >= 1 %}
+                                        <option value="{{ group.id }}">{{ group.name }}</option>
+                                        {{ _self.newList(group.children) }}
                                     {% else %}
                                         <option value="{{ group.id }}">{{ group.name }}</option>
                                     {% endif %}
                                 {% endfor %}
                             {% endmacro %}
                         </select>
-                        (Można wybrać tylko grupy bez podgrup)
                     </th>
                 </tr>
             </table>

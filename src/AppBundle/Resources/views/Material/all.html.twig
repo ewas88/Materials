@@ -1,30 +1,67 @@
 {% extends "base.html.twig" %}
 {% block body %}
     {% if message is defined %}
-        {{ message }} <br>
+        <h1 align="center">{{ message }} </h1>
     {% endif %}
-    {% for material in materials %}
-        {{ material.name }}
-        <a href="/materials/update/{{ material.id }}">Edycja materiału</a> <br>
-    {% endfor %}
+    <div class="floating w3-border-right">
+        <div class="w3-container w3-indigo">
+            <h2>Lista wszystkich materiałów</h2>
+        </div>
+        <div class="w3-container">
+            <table class="w3-table w3-striped">
+                <tr>
+                    <th> Nazwa</th>
+                    <th> Kod</th>
+                </tr>
+                {% for material in materials %}
+                    <tr>
+                        <th>{{ material.name }}</th>
+                        <th>{{ material.code }}</th>
+                        <th><a href="/materials/update/{{ material.id }}">Edycja materiału</a></th>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+    <div class="floating w3-border-left">
+        <div class="w3-container w3-blue">
+            <h2> Utwórz nowy materiał </h2>
+        </div>
+        <form class="w3-container" action="#" method="POST">
 
-    <form action="#" method="POST">
-        Utwórz nowy materiał:<br>
-        Nazwa: <input type="text" name="name" required><br>
-        Kod: <input type="text" name="code" required><br>
-        Jednostka miary:
-        <select name="unit">
-            <option value="null">brak jednostki miary</option>
-            {% for unit in units %}
-                <option value={{ unit.id }}>{{ unit.name }}</option>
-            {% endfor %}
-        </select> <br>
-        Grupa materiałów:
-        <select name="group">
-            {% for group in groups %}
-                <option value={{ group.id }}>{{ group.name }} (Grupa nadrzędna: {{ group.parent.name }})</option>
-            {% endfor %}
-        </select> <br>
-        <input type="submit" name="add" value="Dodaj materiał do bazy">
-    </form>
+            <p>
+                <label>Nazwa:</label>
+                <input type="text" name="name" required></p>
+            <p>
+                <label>Kod:</label>
+                <input type="text" name="code" required></p>
+            <p>
+                <label>Jednostka miary:</label>
+                <select name="unit">
+                    <option value="null">brak jednostki miary</option>
+                    {% for unit in units %}
+                        <option value={{ unit.id }}>{{ unit.name }}</option>
+                    {% endfor %}
+                </select></p>
+            <p>
+                <label>Grupa materiałów:</label>
+                <select name="group">
+                    {{ _self.newList(groups) }}
+                    {% macro newList(groups) %}
+                        {% for group in groups %}
+                            {% if group.children|length >= 1 %}
+                                <optgroup label="{{ group.name }}">
+                                    {{ _self.newList(group.children) }}
+                                </optgroup>
+                            {% else %}
+                                <option value="{{ group.id }}">{{ group.name }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    {% endmacro %}
+                </select>
+                (Można wybrać tylko grupy bez podgrup)
+            </p>
+            <input class="w3-button w3-black" type="submit" name="add" value="Dodaj materiał do bazy">
+        </form>
+    </div>
 {% endblock %}

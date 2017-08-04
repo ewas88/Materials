@@ -1,15 +1,18 @@
 {% extends "base.html.twig" %}
 {% block body %}
     {% if message is defined %}
-        {{ message }}
+        <h1 align="center">{{ message }}</h1>
     {% else %}
+        <div class="w3-container w3-indigo">
+            <h2>Dane jednostki miary do zmiany - <b>{{ unit.name }}</b></h2>
+        </div>
         <form action="#" method="POST">
-            <table>
-                Dane jednostki miary do zmiany:
+            <table class="w3-table w3-striped">
+
                 <tr>
                     <th></th>
                     <th>Aktualne dane</th>
-                    <th>Zmień dane</th>
+                    <th>Zmień dane (pozycje bez zmian pozostawić puste)</th>
                 </tr>
                 <tr>
                     <th>Nazwa</th>
@@ -22,7 +25,7 @@
                     <th><input type="text" name="abbreviation"></th>
                 </tr>
             </table>
-            <input type="submit" name="change" value="Aktualizuj">
+            <input class="w3-button w3-black" type="submit" name="change" value="Aktualizuj">
         </form>
     {% endif %}
 {% endblock %}

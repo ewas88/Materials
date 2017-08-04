@@ -105,7 +105,7 @@ class Material
     /**
      * Get code
      *
-     * @return string 
+     * @return string
      */
     public function getCode()
     {
@@ -128,7 +128,7 @@ class Material
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {

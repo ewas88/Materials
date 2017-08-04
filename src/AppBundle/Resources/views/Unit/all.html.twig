@@ -1,17 +1,42 @@
 {% extends "base.html.twig" %}
 {% block body %}
-    {% if message is defined %}
-        {{ message }} <br>
-    {% endif %}
-    {% for unit in units %}
-        {{ unit.name }}
-        <a href="/units/update/{{ unit.id }}">Edycja jednostki miary</a> <br>
-    {% endfor %}
 
-    <form action="#" method="POST">
-        Utwórz nową jednostkę miary:<br>
-        Nazwa: <input type="text" name="name" required><br>
-        Skrót: <input type="text" name="abbreviation" required><br>
-        <input type="submit" name="add" value="Dodaj jednostkę do bazy">
-    </form>
+    {% if message is defined %}
+        <h1 align="center">{{ message }} </h1>
+    {% endif %}
+    <div class="floating w3-border-right">
+        <div class="w3-container w3-indigo">
+            <h2>Lista wszystkich jednostek miary</h2>
+        </div>
+
+        <div class="w3-container">
+            <table class="w3-table w3-striped">
+                <tr>
+                    <th>Nazwa jednostki</th>
+                    <th>Skrót jednostki</th>
+                </tr>
+                {% for unit in units %}
+                    <tr>
+                        <th>{{ unit.name }}</th>
+                        <th>{{ unit.abbreviation }}</th>
+                        <th><a href="/units/update/{{ unit.id }}">Edycja jednostki miary</a></th>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+    <div class="floating w3-border-left">
+        <div class="w3-container w3-blue">
+            <h2>Utwórz nową jednostkę miary</h2>
+        </div>
+        <form class="w3-container" action="#" method="POST">
+            <p>
+                <label>Nazwa:</label>
+                <input type="text" name="name" required></p>
+            <p>
+                <label>Skrót:</label>
+                <input type="text" name="abbreviation" required></p>
+            <input class="w3-button w3-black" type="submit" name="add" value="Dodaj jednostkę do bazy">
+        </form>
+    </div>
 {% endblock %}

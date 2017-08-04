@@ -33,7 +33,9 @@ class MaterialGroup
      * @ORM\OneToMany(targetEntity="MaterialGroup", mappedBy="parent")
      */
     private $children;
-    public function __construct() {
+
+    public function __construct()
+    {
         $this->children = new ArrayCollection();
         $this->materials = new ArrayCollection();
     }
@@ -84,7 +86,7 @@ class MaterialGroup
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -107,23 +109,11 @@ class MaterialGroup
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
         return $this->name;
     }
-    
-    public static function getTree($roots)
-    {
-        $array = [];
-        foreach ($roots as $root) {
-            foreach ($root->getChildren() as $child) {
-                $array[] = $child;
-            }
-        }
-        return $array;
-    }
-
 
 }

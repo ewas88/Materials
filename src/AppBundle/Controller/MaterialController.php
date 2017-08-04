@@ -25,7 +25,7 @@ class MaterialController extends Controller
         $units = $unitRepository->findBy(array(), array('name' => 'ASC'));
 
         $groupRepository = $this->getDoctrine()->getRepository('AppBundle:MaterialGroup');
-        $groups = $groupRepository->getLeaves();
+        $groups = $groupRepository->findBy(array('parent' => null));
 
         return ['materials' => $materials, 'units' => $units, 'groups' => $groups];
     }
@@ -45,7 +45,7 @@ class MaterialController extends Controller
             $units = $unitRepository->findBy(array(), array('name' => 'ASC'));
 
             $groupRepository = $this->getDoctrine()->getRepository('AppBundle:MaterialGroup');
-            $groups = $groupRepository->getLeaves();
+            $groups = $groupRepository->findBy(array('parent' => null));
 
             if ($material) {
                 return ['material' => $material, 'units' => $units, 'groups' => $groups];
@@ -53,7 +53,7 @@ class MaterialController extends Controller
                 return ['message' => "Niepoprawny numer ID materiału."];
             }
         } else {
-            return ['message' => "Niepoprawny numer ID materiałuuu."];
+            return ['message' => "Niepoprawny numer ID materiału."];
         }
 
     }
@@ -82,7 +82,11 @@ class MaterialController extends Controller
                 }
 
                 if ($code != "") {
-                    $material->setCode($code);
+                    if ($materialRepository->findBy(array('code' => $code))) {
+                        return ['message' => "Wybrany kod istnieje już w bazie - proszę stworzyć inny."];
+                    } else {
+                        $material->setCode($code);
+                    }
                 }
 
                 if ($unit != "same") {
@@ -104,7 +108,7 @@ class MaterialController extends Controller
                 return ['message' => "Niepoprawny numer ID materiału."];
             }
         } else {
-            return ['message' => "Niepoprawny numer ID materiałuuu."];
+            return ['message' => "Niepoprawny numer ID materiału."];
         }
     }
 
@@ -117,6 +121,15 @@ class MaterialController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
+        $materialRepository = $this->getDoctrine()->getRepository('AppBundle:Material');
+        $materials = $materialRepository->findBy(array(), array('name' => 'ASC'));
+
+        $unitRepository = $this->getDoctrine()->getRepository('AppBundle:Unit');
+        $units = $unitRepository->findBy(array(), array('name' => 'ASC'));
+
+        $groupRepository = $this->getDoctrine()->getRepository('AppBundle:MaterialGroup');
+        $groups = $groupRepository->findBy(array('parent' => null));
+
         $name = $request->request->get('name');
         $code = $request->request->get('code');
 
@@ -128,21 +141,17 @@ class MaterialController extends Controller
 
         $material = new Material();
         $material->setName($name);
-        $material->setCode($code);
+
+        if ($materialRepository->findBy(array('code' => $code))) {
+            return ['materials' => $materials, 'units' => $units, 'groups' => $groups, 'message' => "Wybrany kod istnieje już w bazie - proszę stworzyć inny."];
+        } else {
+            $material->setCode($code);
+        }
         $material->setUnit($unit);
         $material->setGroup($group);
 
         $em->persist($material);
         $em->flush();
-
-        $materialRepository = $this->getDoctrine()->getRepository('AppBundle:Material');
-        $materials = $materialRepository->findBy(array(), array('name' => 'ASC'));
-
-        $unitRepository = $this->getDoctrine()->getRepository('AppBundle:Unit');
-        $units = $unitRepository->findBy(array(), array('name' => 'ASC'));
-
-        $groupRepository = $this->getDoctrine()->getRepository('AppBundle:MaterialGroup');
-        $groups = $groupRepository->getLeaves();
 
         return ['materials' => $materials, 'units' => $units, 'groups' => $groups, 'message' => "Materiał dodany do bazy."];
     }

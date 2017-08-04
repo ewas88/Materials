@@ -23,9 +23,10 @@ class MaterialGroupRepository extends EntityRepository
 
     }
 
-    public function getRoot()
+    public function getList($id)
     {
-        $query = $this->_em->createQuery('SELECT m FROM AppBundle:MaterialGroup m WHERE m.parent IS NULL');
+        $query = $this->_em->createQuery('SELECT m FROM AppBundle:MaterialGroup m WHERE m.id != :id')
+            ->setParameter('id', $id);;
 
         return $query->getResult();
     }

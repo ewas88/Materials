@@ -41,7 +41,7 @@ class UnitController extends Controller
                 return ['message' => "Niepoprawny numer ID jednostki miary."];
             }
         } else {
-            return ['message' => "Niepoprawny numer ID jednostki miaryyy."];
+            return ['message' => "Niepoprawny numer ID jednostki miary."];
         }
 
     }
@@ -68,7 +68,11 @@ class UnitController extends Controller
                 }
 
                 if ($abbreviation != "") {
-                    $unit->setAbbreviation($abbreviation);
+                    if ($unitRepository->findBy(array('abbreviation' => $abbreviation))) {
+                        return ['message' => "Wybrany skrót istnieje już w bazie - proszę stworzyć inny."];
+                    } else {
+                        $unit->setAbbreviation($abbreviation);
+                    }
                 }
 
                 $em->persist($unit);
@@ -80,32 +84,37 @@ class UnitController extends Controller
                 return ['message' => "Niepoprawny numer ID jednostki miary."];
             }
         } else {
-            return ['message' => "Niepoprawny numer ID jednostki miary...."];
+            return ['message' => "Niepoprawny numer ID jednostki miary."];
         }
     }
 
-                                                                                                                                                                                                                                                                                                                                                                                            /**
-                                                                                                                                                                                                                                                                                                                                                                                             * @Route("/units")
-                                                                                                                                                                                                                                                                                                                                                                                             * @Template("AppBundle:Unit:all.html.twig")
-                                                                                                                                                                                                                                                                                                                                                                                             * @Method("POST")
-                                                                                                                                                                                                                                                                                                                                                                                             */
-                                                                                                                                                                                                                                                                                                                                                                                            public function newUnitAction(Request $request)
-                                                                                                                                                                                                                                                                                                                                                                                            {
-                                                                                                                                                                                                                                                                                                                                                                                                $em = $this->getDoctrine()->getManager();
-                                                                                                                                                                                                                                                                                                                                                                                        
-                                                                                                                                                                                                                                                                                                                                                                                                $name = $request->request->get('name');
-                                                                                                                                                                                                                                                                                                                                                                                                $abbreviation = $request->request->get('abbreviation');
-                                                                                                                                                                                                                                                                                                                                                                                        
-                                                                                                                                                                                                                                                                                                                                                                                                $unit = new Unit();
-                                                                                                                                                                                                                                                                                                                                                                                                $unit->setName($name);
-                                                                                                                                                                                                                                                                                                                                                                                                $unit->setAbbreviation($abbreviation);
-                                                                                                                                                                                                                                                                                                                                                                                        
-                                                                                                                                                                                                                                                                                                                                                                                                $em->persist($unit);
-                                                                                                                                                                                                                                                                                                                                                                                                $em->flush();
-                                                                                                                                                                                                                                                                                                                                                                                        
-                                                                                                                                                                                                                                                                                                                                                                                                $unitRepository = $this->getDoctrine()->getRepository('AppBundle:Unit');
-                                                                                                                                                                                                                                                                                                                                                                                                $units = $unitRepository->findBy(array(), array('name' => 'ASC'));
-                                                                                                                                                                                                                                                                                                                                                                                        
-                                                                                                                                                                                                                                                                                                                                                                                                return ['units' => $units, 'message' => "Jednostka miary dodana do bazy."];
-                                                                                                                                                                                                                                                                                                                                                                                            }
+    /**
+     * @Route("/units")
+     * @Template("AppBundle:Unit:all.html.twig")
+     * @Method("POST")
+     */
+    public function newUnitAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $name = $request->request->get('name');
+        $abbreviation = $request->request->get('abbreviation');
+
+        $unit = new Unit();
+        $unit->setName($name);
+
+        $unitRepository = $this->getDoctrine()->getRepository('AppBundle:Unit');
+        $units = $unitRepository->findBy(array(), array('name' => 'ASC'));
+
+        if ($unitRepository->findBy(array('abbreviation' => $abbreviation))) {
+            return ['units' => $units, 'message' => "Wybrany skrót istnieje już w bazie - proszę stworzyć inny."];
+        } else {
+            $unit->setAbbreviation($abbreviation);
+
+            $em->persist($unit);
+            $em->flush();
+
+            return ['units' => $units, 'message' => "Jednostka miary dodana do bazy."];
+        }
+    }
 }
